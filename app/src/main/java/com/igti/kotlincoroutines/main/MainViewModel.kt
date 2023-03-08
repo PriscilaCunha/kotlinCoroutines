@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.igti.kotlincoroutines.utils.Utils
 import kotlinx.coroutines.*
 
 class MainViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.Default) : ViewModel() {
@@ -22,7 +23,7 @@ class MainViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
 
     private var currentJob : Job? = null
 
-    fun onButtonClick(useAsync : Boolean) {
+    suspend fun onButtonClick(useAsync : Boolean) {
         if (currentJob != null) return
 
         currentJob = viewModelScope.launch {

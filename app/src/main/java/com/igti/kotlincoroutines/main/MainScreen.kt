@@ -3,14 +3,17 @@ package com.igti.kotlincoroutines.main
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.igti.kotlincoroutines.R
+import kotlinx.coroutines.Dispatchers
 import java.lang.reflect.Modifier
 
 @Composable
@@ -52,4 +55,52 @@ fun MainUI(viewModel: MainViewModel) {
         DefaultButton(buttonName = "Cancelar", onButtonClick = viewModel.onCancelButtonClick())
         Spacer(modifier = Modifier.height(10.dp))
     }
+}
+
+@Composable
+private fun MainText(leftText: String, rightText: String) {
+    Row(
+        modifier = Modifier.fillMaxHeight(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        DefaultText(text = leftText, modifier = Modifier.fillMaxWidth().weight(1F))
+        DefaultText(text = rightText, modifier = Modifier.fillMaxWidth().weight(1F))
+    }
+    Spacer(modifier = Modifier.height(10.dp))
+}
+
+@Composable
+private fun DefaultText(text: String, modifier: Modifier) {
+    Surface(
+        modifier = Modifier.padding(all = 5.dp)
+        color = Color.LightGray
+    ) {
+        Text(
+            text = text,
+            fontSize = 120.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun DefaultButton(buttonName: String, onButtonClick: () -> Unit) {
+
+    Button(
+        onClick = onButtonClick,
+        modifier = Modifier.size(width = 150.dp, height = 60.dp)
+    ) {
+        Text(
+            text = buttonName,
+            fontSize = 30.dp
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DefaultPreview() {
+    val viewModel = MainViewModel(Dispatchers.Default)
+    MainScreen(viewModel)
 }
