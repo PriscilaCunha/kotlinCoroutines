@@ -8,6 +8,7 @@ import com.igti.kotlincoroutines.utils.Utils
 import kotlinx.coroutines.*
 
 class MainViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.Default) : ViewModel() {
+
     companion object {
         private const val TAG = "ViewModel"
         private const val INVALID_DATA = -1
@@ -23,37 +24,38 @@ class MainViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
 
     private var currentJob : Job? = null
 
-    suspend fun onButtonClick(useAsync : Boolean) {
+    fun onButtonClick(useAsync : Boolean) {
         if (currentJob != null) return
 
         currentJob = viewModelScope.launch {
             Utils.log(TAG, "==== Corroutine criada no launch do botão ====")
-        }
 
-        try {
-            val job1 = launch {
-                Utils.log(TAG, "++++ Sub-coroutine criada à esquerda ++++")
-                loadData(useAsync, start = 0, end = 9, data = _leftData)
-                _leftData.value = DONE_LEFT_DATA
-                Utils.log(TAG, "---- Sub-launch à esquerda está finalizada ----")
+            try {
+                val job1 = launch {
+                    Utils.log(TAG, "++++ Sub-coroutine criada à esquerda ++++")
+                    loadData(useAsync, start = 0, end = 9, data = _leftData)
+                    _leftData.value = DONE_LEFT_DATA
+                    Utils.log(TAG, "---- Sub-launch à esquerda está finalizada ----")
+                }
+
+                val job2 = launch {
+                    Utils.log(TAG, "++++ Sub-coroutine criada à direita ++++")
+                    loadData(useAsync, start = 10, end = 19, data = _rightData)
+                    _rightData.value = DONE_RIGHT_DATA
+                    Utils.log(TAG, "---- Sub-launch à direita está finalizada ----")
+                }
+
+                job1.join()
+                job2.join()
+                currentJob = null
+                Utils.log(TAG, "---- Launch finalizada à esquerda e à direita ----")
+
+            } catch (e: Exception) {
+                _leftData.value = INVALID_DATA
+                _rightData.value = INVALID_DATA
+                currentJob = null
+                Utils.log(TAG, "--- Coroutines com erro: $e ---")
             }
-
-            val job2 = launch {
-                Utils.log(TAG, "++++ Sub-coroutine criada à direita ++++")
-                loadData(useAsync, start = 10, end = 19, data = _rightData)
-                _rightData.value = DONE_RIGHT_DATA
-                Utils.log(TAG, "---- Sub-launch à direita está finalizada ----")
-            }
-
-            job1.join()
-            job2.join()
-            currentJob = null
-            Utils.log(TAG, "---- Launch finalizada à esquerda e à direita ----")
-        } catch (e: Exception) {
-            _leftData.value = INVALID_DATA
-            _rightData.value = INVALID_DATA
-            currentJob = null
-            Utils.log(TAG, "--- Coroutines com erro: $e ---")
         }
     }
 

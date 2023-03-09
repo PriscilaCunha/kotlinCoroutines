@@ -3,9 +3,11 @@ package com.igti.kotlincoroutines.main
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -13,8 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.igti.kotlincoroutines.R
+import com.igti.kotlincoroutines.ui.theme.CoroutinesBasicsTheme
 import kotlinx.coroutines.Dispatchers
-import java.lang.reflect.Modifier
 
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
@@ -29,7 +31,7 @@ fun MainScreen(viewModel: MainViewModel) {
 
 @Composable
 fun MainUI(viewModel: MainViewModel) {
-    val scrollStateScope = rememberScrollState()
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
@@ -42,6 +44,7 @@ fun MainUI(viewModel: MainViewModel) {
             leftText = viewModel.leftData.toString(),
             rightText = viewModel.rightData.toString()
         )
+
         DefaultButton(buttonName = "Launch", onButtonClick = {
             viewModel.onButtonClick(useAsync = false)
         })
@@ -52,7 +55,7 @@ fun MainUI(viewModel: MainViewModel) {
         })
         Spacer(modifier = Modifier.height(10.dp))
 
-        DefaultButton(buttonName = "Cancelar", onButtonClick = viewModel.onCancelButtonClick())
+        DefaultButton(buttonName = "Cancel", onButtonClick = viewModel::onCancelButtonClick)
         Spacer(modifier = Modifier.height(10.dp))
     }
 }
@@ -72,7 +75,7 @@ private fun MainText(leftText: String, rightText: String) {
 @Composable
 private fun DefaultText(text: String, modifier: Modifier) {
     Surface(
-        modifier = Modifier.padding(all = 5.dp)
+        modifier = Modifier.padding(all = 5.dp),
         color = Color.LightGray
     ) {
         Text(
@@ -93,7 +96,7 @@ private fun DefaultButton(buttonName: String, onButtonClick: () -> Unit) {
     ) {
         Text(
             text = buttonName,
-            fontSize = 30.dp
+            fontSize = 30.sp
         )
     }
 }
